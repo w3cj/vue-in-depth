@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app">
+      <counter></counter>
+      <counter></counter>
+      <counter></counter>
+      <button @click="inc">increment</button>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+      // create a counter component (that doesn't take any props)
+      // all instances of it should share the same count state
+      // and a button that increments all counters at the same time
+      const data = {
+        count: 0
+      }
+
+      Vue.component('counter', {
+        data() {
+          return data;
+        },
+        template: `<div>{{count}}</div>`
+      })
+
+      new Vue({
+        el: '#app',
+        methods: {
+          inc() {
+            data.count++;
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

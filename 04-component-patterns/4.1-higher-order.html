@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app">
+      <my-button></my-button>
+      <big-button></big-button>
+      <cancel-button></cancel-button>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+      const MyButton = {
+        props: ['buttonStyle', 'fontSize'],
+        computed: {
+          computedStyle() {
+            return Object.assign({}, this.buttonStyle, {
+              fontSize: this.fontSize
+            })
+          }
+        },
+        template: `
+          <button :style="computedStyle">
+            <slot></slot>
+          </button>
+        `
+      };
+
+      const BigButton = {
+        components: {
+          MyButton
+        },
+        template: `
+          <my-button :button-style="{ color: 'green' }" :font-size="2em">
+            <slot></slot>
+          </my-button>
+        `
+      };
+
+      const ErrorButton = {
+        components: {
+          MyButton
+        },
+        template: `
+          <my-button :button-style="{ color: 'red' }">
+            <slot></slot>
+          </my-button>
+        `
+      };
+
+      const ErrorButton = {
+        props: ['Severity'],
+        render(h) {
+          // figure out what props to pass
+          return h(MyButton, {
+            props: {}
+          })
+        }
+      };
+
+      // both accept style prop
+      const Button = {}
+      const Tag = {}
+
+      function withRedStyle(BaseComponent) {
+      return {
+        render(h) {
+          return h(BaseComponent, {
+            props: {
+              style: {
+                color: 'red'
+              }
+            }
+          })
+        }
+      }
+      }
+
+      function withStore(BaseComponent, store) {
+        // inject store into base as prop
+      }
+
+      // the point
+      const RedButton = withRedStyle(Button);
+      const RedTag = withRedStyle(Tag);
+    </script>
+  </body>
+</html>

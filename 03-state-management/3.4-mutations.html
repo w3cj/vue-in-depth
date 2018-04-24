@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app">
+      <counter></counter>
+      <counter></counter>
+      <counter></counter>
+      <button @click="inc">increment</button>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+      function createStore ({ state, mutations }) {
+        return new Vue({
+          data: {
+            state
+          },
+          methods: {
+            commit(key) {
+              mutations[key](this.state);
+            }
+          }
+        });
+      }
+
+      const store = createStore({
+        state: { count: 0 },
+        mutations: {
+          inc (state) {
+            state.count++
+          }
+        }
+      })
+
+      const Counter = {
+        render (h) {
+          return h('div', store.state.count)
+        }
+      }
+
+      new Vue({
+        el: '#app',
+        components: { Counter },
+        methods: {
+          inc () {
+            store.commit('inc')
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

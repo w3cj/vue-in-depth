@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app">
+      <my-awesome-list>
+        <template slot-scope="{ item, msg }">
+          <div class="item">{{ item }}</div>
+          <span>{{ msg }}</span>
+        </template>
+      </my-awesome-list>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+      const MyAwesomeList = {
+        data: () => ({
+          list: [
+            { text: 'Hello' },
+            { text: 'Vue' },
+            { text: 'Denver' },
+            { text: 'Meetup' },
+          ]
+        }),
+        template: `
+          <ul>
+            <li v-for="item in list">
+              <slot :item="item" msg="hello" />
+            </li>
+          </ul>
+        `
+      }
+
+      new Vue({
+        el: '#app',
+        components: {
+          MyAwesomeList
+        }
+      })
+    </script>
+  </body>
+</html>

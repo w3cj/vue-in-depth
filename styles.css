@@ -1,0 +1,15 @@
+img {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+}
+
+.vue-logo {
+  height: 200px;
+}
+
+code {
+  font-size: 2em !important;
+  line-height: 2em !important;
+}

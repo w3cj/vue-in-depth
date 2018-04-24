@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+    function createApp ({ el, model, view, actions }) {
+    // Implement this!
+    }
+
+    // voila
+    createApp({
+      el: '#app',
+      model: {
+        count: 0
+      },
+      actions: {
+        inc: ({ count }) => ({ count: count + 1 }),
+        dec: ({ count }) => ({ count: count - 1 })
+      },
+      view: (h, model, actions) => h('div', { attrs: { id: 'app' }}, [
+        model.count, ' ',
+        h('button', { on: { click: actions.inc }}, '+'),
+        h('button', { on: { click: actions.dec }}, '-')
+      ])
+    })
+    </script>
+  </body>
+</html>

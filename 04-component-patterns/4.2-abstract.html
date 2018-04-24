@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app">
+      <error-boundary>
+        <foo></foo>
+      </error-boundary>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+      Vue.component('ErrorBoundary', {
+        props: {},
+        data () {
+          return {
+            error: null
+          }
+        },
+        // parent level component, intercepts errors propgating up from nested components
+        errorCaptured (err, vm, info) {
+          this.error = err.stack
+          return false // error has been gracefully handled, no need to propgate further
+        },
+        render (h) {
+          if (this.error) {
+            return h(
+              'div',
+              { style: { color: 'red' }},
+              `error from children: ${this.error}`
+            )
+          }
+          return this.$slots.default[0]
+        }
+      })
+
+      Vue.component('foo', {
+        render (h) {
+          // throw new Error('oops')
+          return h('div', 'hello from foo')
+        }
+      })
+
+      new Vue({
+        el: '#app',
+        data: {
+          ok: true
+        }
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+  </head>
+  <body>
+    <div id="app">
+      <input v-model="username">
+      <div v-if="!username">Please input your GitHub username</div>
+
+      <fetch v-else :url="`https://api.github.com/users/${username}`">
+        <template slot-scope="{ status, data, error }">
+          <div v-if="status === 'pending'">Loading avatar for {{ username }}</div>
+          <div v-else-if="status === 'success'">
+            <img :src="data.avatar_url">
+
+            <fetch :url="data.organizations_url">
+              <template slot-scope="{ status, data, error }">
+                <div v-if="status === 'pending'">Loading organizations...</div>
+                <div v-else-if="status === 'success'">
+                  <h2>Organizations</h2>
+                  <p v-if="!data.length">User doesn't belong to any organizations.</p>
+
+                  <fetch v-for="org in data" :url="org.url">
+                    <template slot-scope="{ status, data, error }">
+                      <div v-if="status === 'pending'">
+                        Loading details for {{ org.login }}...
+                      </div>
+                      <div v-else-if="status === 'success'">
+                        {{ org.login }} ({{ data.name || 'full name not set' }})
+                      </div>
+                      <div v-else-if="status === 'error'">{{ error }}</div>
+                    </template>
+                  </fetch>
+
+                </div>
+                <div v-else-if="status === 'error'">{{ error }}</div>
+              </template>
+            </fetch>
+
+          </div>
+          <div v-else-if="status === 'error'">{{ error }}</div>
+        </template>
+      </fetch>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script src="https://unpkg.com/lodash" charset="utf-8"></script>
+    <script>
+      Vue.component('fetch', {
+        props: ['url'],
+        data () {
+          const res = {
+            status: 'pending',
+            data: null,
+            error: null
+          }
+
+          let activePromise = null
+
+          const fetchData = _.debounce(url => {
+            if (!url) {
+              return
+            }
+
+            const currentPromise = activePromise = fetch(url)
+            res.status = 'pending'
+
+            currentPromise.then(response => {
+              if (activePromise != currentPromise) {
+                return
+              }
+              if (response.status >= 200 && response.status < 300) {
+                return response.json()
+              } else {
+                activePromise = null
+                res.status = 'error'
+                res.data = null
+                res.error = response.statusText
+              }
+            }).then(data => {
+              if (activePromise != currentPromise) {
+                return
+              }
+              activePromise = null
+              res.status = 'success'
+              res.data = data
+              res.error = null
+            }).catch(error => {
+              if (activePromise != currentPromise) {
+                return
+              }
+              activePromise = null
+              res.status = 'error'
+              res.data = null
+              res.error = error
+            })
+          }, 300)
+
+          setTimeout(() => {
+            this.$watch(() => this.url, fetchData, { immediate: true })
+          }, 0)
+
+          return { res }
+        },
+
+        render () {
+          return this.$scopedSlots.default(this.res)[0]
+        }
+      })
+
+      new Vue({
+        el: '#app',
+        data: { username: '' }
+      })
+    </script>
+  </body>
+</html>

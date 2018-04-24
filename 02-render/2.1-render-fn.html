@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://ez-css.now.sh">
+    <style>
+    #welcome.red {
+      color: red;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1 id="welcome" :class="{ red: isRed }">{{ msg }}</h1>
+      <button @click="isRed = !isRed">toggle red</button>
+    </div>
+    <script src="https://unpkg.com/vue@2" charset="utf-8"></script>
+    <script>
+    new Vue({
+      el: '#app',
+      data: {
+        isRed: true,
+        msg: 'This should be red'
+      },
+      // render function takes priority! vue will use this if it's present
+      render(h) {
+        // https://vuejs.org/v2/guide/render-function.html#createElement-Arguments
+        return h('div', [
+          h('h1', {
+          attrs: {
+            id: 'welcome'
+          },
+          class: {
+            red: this.isRed
+          }
+        }, this.msg),
+        h('button', {
+          on: {
+            click: () => {
+              this.isRed = !this.isRed
+            }
+          }
+        }, 'toggle red')
+      ])
+    }
+  })
+    </script>
+  </body>
+</html>
